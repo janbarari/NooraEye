@@ -32,8 +32,6 @@ fun nooraEye(
 ): EyeResult {
     val systemRuntime = Runtime.getRuntime()
     runGarbageCollector(systemRuntime)
-
-    println("NooraEye: $title")
     val memoryUsageBeforeExecution = systemRuntime.usedMemory()
     val timestampBeforeExecution = System.currentTimeMillis()
     block()
@@ -41,19 +39,21 @@ fun nooraEye(
     val memoryUsageAfterExecution = systemRuntime.usedMemory()
 
     return EyeResult(
+        title = title,
         partialMemoryUsageInByte = memoryUsageAfterExecution - memoryUsageBeforeExecution,
         executionDurationInMs = timestampAfterExecution - timestampBeforeExecution
     )
 }
 
 data class EyeResult(
+    val title: String,
     val partialMemoryUsageInByte: Long,
     val executionDurationInMs: Long
 )
 
 private fun runGarbageCollector(systemRuntime: Runtime) {
     (0..<3).forEach { _ -> systemRuntime.gc() }
-    Thread.sleep(200)
+    Thread.sleep(500)
 }
 
 private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
@@ -115,9 +115,9 @@ val S: TimeFormatter = TimeSecondFormatter()
 fun Long.toSecond(): Long = this / 1000
 
 fun EyeResult.prettyPrint(memoryFormatter: MemoryFormatter = B, timeFormatter: TimeFormatter = M) {
+    println("%s Eye Result".format(title))
     println("Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
     println("Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
-    println()
 }
 
 fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {

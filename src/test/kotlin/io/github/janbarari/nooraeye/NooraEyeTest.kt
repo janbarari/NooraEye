@@ -29,12 +29,13 @@ class NooraEyeTest {
 
     @Test
     fun `check nooraEye function works correctly`() {
+        nooraEye("Sample 1") {
 
+        }.prettyPrint(KB)
     }
 
     @Test
     fun `check assertNooraEye passes when execution doesn't exceed the thresholds`() {
-
     }
 
     @Test
