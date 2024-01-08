@@ -1,11 +1,11 @@
-package io.github.janbarari.nooraeye.assertion
+package io.github.janbarari.functioneye.assertion
 
-import io.github.janbarari.nooraeye.nooraEye
+import io.github.janbarari.functioneye.functionEye
 
-fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {
-    val eyeResult = nooraEye(title, block)
+fun assertFunctionEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {
+    val eyeResult = functionEye(title, block)
     if (eyeResult.partialMemoryUsageInByte > memoryThresholdInByte) {
-        throw NooraEyeAssertionException(
+        throw FunctionEyeAssertionException(
             ("Extra Memory Used! Target threshold was %s bytes but it used %s bytes")
                 .format(
                     memoryThresholdInByte,
@@ -14,7 +14,7 @@ fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs
         )
     }
     if (eyeResult.executionDurationInMs > timeThresholdInMs) {
-        throw NooraEyeAssertionException("Extra Time Used! Target threshold was %s ms but it took %s ms"
+        throw FunctionEyeAssertionException("Extra Time Used! Target threshold was %s ms but it took %s ms"
                     .format(
                         timeThresholdInMs,
                         eyeResult.executionDurationInMs

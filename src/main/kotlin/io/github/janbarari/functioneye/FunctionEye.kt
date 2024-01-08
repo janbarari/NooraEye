@@ -21,24 +21,24 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.functioneye
 
-import io.github.janbarari.nooraeye.memory.MemoryByteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryFormatter
-import io.github.janbarari.nooraeye.memory.MemoryKilobyteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryMegabyteFormatter
-import io.github.janbarari.nooraeye.time.TimeFormatter
-import io.github.janbarari.nooraeye.time.TimeMillisecondFormatter
-import io.github.janbarari.nooraeye.time.TimeSecondFormatter
+import io.github.janbarari.functioneye.memory.MemoryByteFormatter
+import io.github.janbarari.functioneye.memory.MemoryFormatter
+import io.github.janbarari.functioneye.memory.MemoryKilobyteFormatter
+import io.github.janbarari.functioneye.memory.MemoryMegabyteFormatter
+import io.github.janbarari.functioneye.time.TimeFormatter
+import io.github.janbarari.functioneye.time.TimeMillisecondFormatter
+import io.github.janbarari.functioneye.time.TimeSecondFormatter
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-fun nooraEye(
+fun functionEye(
     title: String,
     block: () -> Unit
 ): EyeResult {
     if (lock.isLocked) {
-        throw Exception("nooraEye shouldn't run more than 1 execution at a time")
+        throw Exception("functionEye shouldn't run more than 1 execution at a time")
     }
     lock.lock()
     val systemRuntime = Runtime.getRuntime()

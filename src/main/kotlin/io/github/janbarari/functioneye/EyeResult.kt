@@ -21,10 +21,10 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.functioneye
 
-import io.github.janbarari.nooraeye.memory.MemoryFormatter
-import io.github.janbarari.nooraeye.time.TimeFormatter
+import io.github.janbarari.functioneye.memory.MemoryFormatter
+import io.github.janbarari.functioneye.time.TimeFormatter
 
 data class EyeResult(
     val title: String,

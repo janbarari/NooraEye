@@ -1,4 +1,4 @@
-package io.github.janbarari.nooraeye
+package io.github.janbarari.functioneye
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,20 +31,15 @@ fun getCurrentlyAllocatedMemory(): Long {
 fun main(args: Array<String>) {
     runBlocking {
         launch {
-            nooraEye("A") {
+            functionEye("A") {
                 runBlocking { delay(1000) }
             }.prettyPrint()
         }
         launch {
             //delay(1100)
-            nooraEye("B") {
+            functionEye("B") {
                 runBlocking { delay(1000) }
             }.prettyPrint()
         }
     }
 }
-//    CoroutineScope(Dispatchers.Default).launch {
-//        nooraEye("b") {
-//            runBlocking { delay(1000) }
-//        }.prettyPrint()
-//    }

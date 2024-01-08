@@ -21,6 +21,26 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.assertion
+package io.github.janbarari.functioneye
 
-class NooraEyeAssertionException(message: String): Throwable(message)
+import org.junit.jupiter.api.Test
+
+class FunctionEyeTest {
+
+    @Test
+    fun `check functionEye function works correctly`() {
+        functionEye("Sample 1") {
+
+        }.prettyPrint(KB)
+    }
+
+    @Test
+    fun `check assertFunctionEye passes when execution doesn't exceed the thresholds`() {
+    }
+
+    @Test
+    fun `check assertFunctionEye throws exception when execution does exceed the thresholds`() {
+
+    }
+
+}

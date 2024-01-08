@@ -1,6 +1,6 @@
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.functioneye.time
 
-import io.github.janbarari.nooraeye.toSecond
+import io.github.janbarari.functioneye.toSecond
 
 class TimeSecondFormatter : TimeFormatter {
     override fun format(value: Long): String {

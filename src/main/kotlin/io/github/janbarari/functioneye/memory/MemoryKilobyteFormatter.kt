@@ -1,6 +1,6 @@
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.functioneye.memory
 
-import io.github.janbarari.nooraeye.toKb
+import io.github.janbarari.functioneye.toKb
 
 class MemoryKilobyteFormatter : MemoryFormatter {
     override fun format(value: Long): String {

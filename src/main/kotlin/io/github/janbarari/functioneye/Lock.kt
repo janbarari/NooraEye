@@ -1,4 +1,4 @@
-package io.github.janbarari.nooraeye
+package io.github.janbarari.functioneye
 
 class Lock {
 
