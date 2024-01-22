@@ -29,7 +29,7 @@ class FunctionEyeTest {
 
     @Test
     fun `check functionEye function works correctly`() {
-        functionEye("Sample 1") {
+        nooraEye("Sample 1") {
 
         }.prettyPrint(KB)
     }

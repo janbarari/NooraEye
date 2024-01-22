@@ -33,7 +33,7 @@ import io.github.janbarari.nooraeye.time.TimeSecondFormatter
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-fun functionEye(
+fun nooraEye(
     title: String,
     block: () -> Unit
 ): EyeResult {

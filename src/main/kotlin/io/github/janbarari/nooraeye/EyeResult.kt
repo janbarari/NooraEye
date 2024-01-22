@@ -33,7 +33,7 @@ data class EyeResult(
 )
 
 fun EyeResult.prettyPrint(memoryFormatter: MemoryFormatter = B, timeFormatter: TimeFormatter = M) {
-    println("    %s Eye Result".format(title))
-    println("    Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
-    println("    Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
+    println("%s Eye Result".format(title))
+    println("Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
+    println("Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
 }
