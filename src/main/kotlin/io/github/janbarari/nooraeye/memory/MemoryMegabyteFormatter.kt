@@ -1,6 +1,6 @@
-package io.github.janbarari.functioneye.memory
+package io.github.janbarari.nooraeye.memory
 
-import io.github.janbarari.functioneye.toMb
+import io.github.janbarari.nooraeye.toMb
 
 class MemoryMegabyteFormatter : MemoryFormatter {
     override fun format(value: Long): String {

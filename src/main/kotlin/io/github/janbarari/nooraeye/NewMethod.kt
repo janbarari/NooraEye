@@ -1,8 +1,5 @@
-package io.github.janbarari.functioneye
+package io.github.janbarari.nooraeye
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.lang.management.ManagementFactory
 
 fun getGcCount(): Long {
@@ -29,17 +26,12 @@ fun getCurrentlyAllocatedMemory(): Long {
 }
 
 fun main(args: Array<String>) {
-    runBlocking {
-        launch {
-            functionEye("A") {
-                runBlocking { delay(1000) }
-            }.prettyPrint()
-        }
-        launch {
-            //delay(1100)
-            functionEye("B") {
-                runBlocking { delay(1000) }
-            }.prettyPrint()
-        }
-    }
+
+
+    functionEye("Test #1") {
+        // Reverse a 100 million numbers
+        (0 until 100_000_000).toList().reversed()
+    }.prettyPrint(KB)
+
+
 }

@@ -21,6 +21,19 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.functioneye.assertion
+package io.github.janbarari.nooraeye
 
-class FunctionEyeAssertionException(message: String): Throwable(message)
+import io.github.janbarari.nooraeye.memory.MemoryFormatter
+import io.github.janbarari.nooraeye.time.TimeFormatter
+
+data class EyeResult(
+    val title: String,
+    val partialMemoryUsageInByte: Long,
+    val executionDurationInMs: Long
+)
+
+fun EyeResult.prettyPrint(memoryFormatter: MemoryFormatter = B, timeFormatter: TimeFormatter = M) {
+    println("    %s Eye Result".format(title))
+    println("    Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
+    println("    Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
+}

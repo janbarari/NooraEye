@@ -1,6 +1,6 @@
-package io.github.janbarari.functioneye.assertion
+package io.github.janbarari.nooraeye.assertion
 
-import io.github.janbarari.functioneye.functionEye
+import io.github.janbarari.nooraeye.functionEye
 
 fun assertFunctionEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {
     val eyeResult = functionEye(title, block)

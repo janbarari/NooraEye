@@ -21,19 +21,26 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.functioneye
+package io.github.janbarari.nooraeye
 
-import io.github.janbarari.functioneye.memory.MemoryFormatter
-import io.github.janbarari.functioneye.time.TimeFormatter
+import org.junit.jupiter.api.Test
 
-data class EyeResult(
-    val title: String,
-    val partialMemoryUsageInByte: Long,
-    val executionDurationInMs: Long
-)
+class FunctionEyeTest {
 
-fun EyeResult.prettyPrint(memoryFormatter: MemoryFormatter = B, timeFormatter: TimeFormatter = M) {
-    println("%s Eye Result".format(title))
-    println("Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
-    println("Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
+    @Test
+    fun `check functionEye function works correctly`() {
+        functionEye("Sample 1") {
+
+        }.prettyPrint(KB)
+    }
+
+    @Test
+    fun `check assertFunctionEye passes when execution doesn't exceed the thresholds`() {
+    }
+
+    @Test
+    fun `check assertFunctionEye throws exception when execution does exceed the thresholds`() {
+
+    }
+
 }

@@ -21,15 +21,15 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.functioneye
+package io.github.janbarari.nooraeye
 
-import io.github.janbarari.functioneye.memory.MemoryByteFormatter
-import io.github.janbarari.functioneye.memory.MemoryFormatter
-import io.github.janbarari.functioneye.memory.MemoryKilobyteFormatter
-import io.github.janbarari.functioneye.memory.MemoryMegabyteFormatter
-import io.github.janbarari.functioneye.time.TimeFormatter
-import io.github.janbarari.functioneye.time.TimeMillisecondFormatter
-import io.github.janbarari.functioneye.time.TimeSecondFormatter
+import io.github.janbarari.nooraeye.memory.MemoryByteFormatter
+import io.github.janbarari.nooraeye.memory.MemoryFormatter
+import io.github.janbarari.nooraeye.memory.MemoryKilobyteFormatter
+import io.github.janbarari.nooraeye.memory.MemoryMegabyteFormatter
+import io.github.janbarari.nooraeye.time.TimeFormatter
+import io.github.janbarari.nooraeye.time.TimeMillisecondFormatter
+import io.github.janbarari.nooraeye.time.TimeSecondFormatter
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -38,7 +38,7 @@ fun functionEye(
     block: () -> Unit
 ): EyeResult {
     if (lock.isLocked) {
-        throw Exception("functionEye shouldn't run more than 1 execution at a time")
+        throw Exception("nooraEye shouldn't run more than 1 execution at a time")
     }
     lock.lock()
     val systemRuntime = Runtime.getRuntime()
@@ -63,7 +63,6 @@ private fun runGarbageCollector(systemRuntime: Runtime) {
 
 private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
 
-
 val B: MemoryFormatter = MemoryByteFormatter()
 val KB: MemoryFormatter = MemoryKilobyteFormatter()
 val MB: MemoryFormatter = MemoryMegabyteFormatter()
@@ -79,6 +78,7 @@ fun Long.toMb(): Double = (this / 1048576.0).floorWithTwoDecimal()
 
 val M: TimeFormatter = TimeMillisecondFormatter()
 val S: TimeFormatter = TimeSecondFormatter()
+
 fun Long.toSecond(): Long = this / 1000
 
 fun Int.asKb(): Long {
