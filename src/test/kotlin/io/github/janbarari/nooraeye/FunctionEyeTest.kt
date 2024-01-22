@@ -29,7 +29,15 @@ class FunctionEyeTest {
 
     @Test
     fun `check functionEye function works correctly`() {
-
+        nooraEye("Test #0624") {
+            buildString {
+                (0 .. 10000).forEach {
+                    append("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                }
+            }
+        }.prettyPrint(
+            memoryFormatter = MemoryFormatters.kb
+        )
     }
 
     @Test

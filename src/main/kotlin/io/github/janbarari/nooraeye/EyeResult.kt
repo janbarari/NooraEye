@@ -29,7 +29,8 @@ import io.github.janbarari.nooraeye.time.TimeFormatter
 data class EyeResult(
     val title: String,
     val partialMemoryUsageInByte: Long,
-    val executionDurationInMs: Long
+    val executionDurationInMs: Long,
+    val isAccurate: Boolean
 )
 
 fun EyeResult.prettyPrint(
@@ -37,7 +38,8 @@ fun EyeResult.prettyPrint(
     timeFormatter: TimeFormatter = TimeFormatters.millis
 ) {
     val title = "%s Eye Result".format(title)
-    var consoleLength = 6 + title.length
+    val note = listOf("If GC happens during execution", "the accuracy will be \"Low\".")
+    var consoleLength = 13 + title.length
     consoleLength += if (memoryFormatter.format(partialMemoryUsageInByte).length > timeFormatter.format(executionDurationInMs).length) {
         memoryFormatter.format(partialMemoryUsageInByte).length
     } else {
@@ -49,6 +51,14 @@ fun EyeResult.prettyPrint(
         printBreakLine()
         printLine("Memory usage", memoryFormatter.format(partialMemoryUsageInByte))
         printLine("Executed in", timeFormatter.format(executionDurationInMs))
+        printLine("Accuracy", if(isAccurate) "High" else "Low")
+        printBreakLine('-')
+        if (consoleLength > note[0].length + note[1].length) {
+            printLine("%s %s".format(note[0], note[1]))
+        } else {
+            printLine(note[0])
+            printLine(note[1])
+        }
         printLastLine()
     }
 }

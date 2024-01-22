@@ -25,6 +25,13 @@ package io.github.janbarari.nooraeye
 
 import java.lang.management.ManagementFactory
 
+private val systemRuntime = Runtime.getRuntime()
+
+data class RealMemoryResult(
+    val usedMemoryInBytes: Long,
+    val gcCount: Long
+)
+
 /**
  * Returns the memory gc count
  */
@@ -42,11 +49,14 @@ private fun getGcCount(): Long {
 /**
  * Returns really used memory by comparing the gc count before and after System.gc() invoked.
  */
-private fun getReallyUsedMemory(): Long {
+private fun getReallyUsedMemory(): RealMemoryResult {
     val before = getGcCount()
     System.gc()
     while (getGcCount() == before);
-    return Runtime.getRuntime().usedMemory()
+    return RealMemoryResult(
+        usedMemoryInBytes = systemRuntime.usedMemory(),
+        gcCount = getGcCount()
+    )
 }
 
 fun nooraEye(
@@ -60,13 +70,24 @@ fun nooraEye(
     val memoryUsageBeforeExecution = getReallyUsedMemory()
     val timestampBeforeExecution = System.currentTimeMillis()
     block()
+    var isAccurate = true
     val timestampAfterExecution = System.currentTimeMillis()
-    val memoryUsageAfterExecution = getReallyUsedMemory()
+    val memoryUsageAfterExecution = RealMemoryResult(
+        usedMemoryInBytes = systemRuntime.usedMemory(),
+        gcCount = getGcCount()
+    )
+    if (memoryUsageAfterExecution.gcCount != memoryUsageBeforeExecution.gcCount) {
+        isAccurate = false
+    }
+    var partialMemoryUsage = memoryUsageAfterExecution.usedMemoryInBytes - memoryUsageBeforeExecution.usedMemoryInBytes
+    if (partialMemoryUsage < 0) {
+        partialMemoryUsage = 0
+    }
     lock.unlock()
     return EyeResult(
         title = title,
-        partialMemoryUsageInByte = memoryUsageAfterExecution - memoryUsageBeforeExecution,
-        executionDurationInMs = timestampAfterExecution - timestampBeforeExecution
+        partialMemoryUsageInByte = partialMemoryUsage,
+        executionDurationInMs = timestampAfterExecution - timestampBeforeExecution,
+        isAccurate = isAccurate
     )
 }
-
