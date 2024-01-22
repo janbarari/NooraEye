@@ -32,16 +32,16 @@ fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
 
 fun Long.millisToSecond(): Long = this / 1000
 
-fun Int.kilobyte(): Long {
-    return (this * 1024.0).toLong()
+fun kbToByte(value: Int): Long {
+    return (value * 1024.0).toLong()
 }
 
-fun Int.megabyte(): Long {
-    return (this * 1048576.0).toLong()
+fun mbToByte(value: Int): Long {
+    return (value * 1048576.0).toLong()
 }
 
-fun Int.asSecond(): Long {
-    return (this * 1000.0).toLong()
+fun secondToMillis(value: Int): Long {
+    return (value * 1000.0).toLong()
 }
 
 fun Double.floorWithTwoDecimal(): Double {

@@ -24,9 +24,11 @@
 package io.github.janbarari.nooraeye.assertion
 
 import io.github.janbarari.nooraeye.nooraEye
+import io.github.janbarari.nooraeye.prettyPrint
 
 fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {
     val eyeResult = nooraEye(title, block)
+    eyeResult.prettyPrint()
     if (eyeResult.partialMemoryUsageInByte > memoryThresholdInByte) {
         throw FunctionEyeAssertionException(
             ("Extra Memory Used! Target threshold was %s bytes but it used %s bytes")
