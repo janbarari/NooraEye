@@ -23,27 +23,11 @@
 
 package io.github.janbarari.nooraeye
 
-import java.lang.management.ManagementFactory
+import io.github.janbarari.nooraeye.time.TimeFormatter
+import io.github.janbarari.nooraeye.time.TimeMillisecondFormatter
+import io.github.janbarari.nooraeye.time.TimeSecondFormatter
 
-fun getGcCount(): Long {
-    var sum: Long = 0
-    for (b in ManagementFactory.getGarbageCollectorMXBeans()) {
-        val count = b.collectionCount
-        if (count != -1L) {
-            sum += count
-        }
-    }
-    return sum
-}
-
-fun getReallyUsedMemory(): Long {
-    val before = getGcCount()
-    System.gc()
-    while (getGcCount() == before);
-    return getCurrentlyAllocatedMemory()
-}
-
-fun getCurrentlyAllocatedMemory(): Long {
-    val runtime = Runtime.getRuntime()
-    return runtime.totalMemory() - runtime.freeMemory()
+object TimeFormatters {
+    val millis: TimeFormatter = TimeMillisecondFormatter()
+    val second: TimeFormatter = TimeSecondFormatter()
 }

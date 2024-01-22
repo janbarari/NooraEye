@@ -21,12 +21,15 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.byteToMegabyte
+import io.github.janbarari.nooraeye.memory.MemoryByteFormatter
+import io.github.janbarari.nooraeye.memory.MemoryFormatter
+import io.github.janbarari.nooraeye.memory.MemoryKilobyteFormatter
+import io.github.janbarari.nooraeye.memory.MemoryMegabyteFormatter
 
-class MemoryMegabyteFormatter : MemoryFormatter {
-    override fun format(value: Long): String {
-        return "%sMb".format(value.byteToMegabyte())
-    }
+object MemoryFormatters {
+    val byte: MemoryFormatter = MemoryByteFormatter()
+    val kb: MemoryFormatter = MemoryKilobyteFormatter()
+    val mb: MemoryFormatter = MemoryMegabyteFormatter()
 }

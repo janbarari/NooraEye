@@ -23,31 +23,45 @@
 
 package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.memory.MemoryByteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryFormatter
-import io.github.janbarari.nooraeye.memory.MemoryKilobyteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryMegabyteFormatter
-import io.github.janbarari.nooraeye.time.TimeFormatter
-import io.github.janbarari.nooraeye.time.TimeMillisecondFormatter
-import io.github.janbarari.nooraeye.time.TimeSecondFormatter
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import java.lang.management.ManagementFactory
+
+/**
+ * Returns the memory gc count
+ */
+private fun getGcCount(): Long {
+    var sum: Long = 0
+    for (b in ManagementFactory.getGarbageCollectorMXBeans()) {
+        val count = b.collectionCount
+        if (count != -1L) {
+            sum += count
+        }
+    }
+    return sum
+}
+
+/**
+ * Returns really used memory by comparing the gc count before and after System.gc() invoked.
+ */
+private fun getReallyUsedMemory(): Long {
+    val before = getGcCount()
+    System.gc()
+    while (getGcCount() == before);
+    return Runtime.getRuntime().usedMemory()
+}
 
 fun nooraEye(
     title: String,
     block: () -> Unit
 ): EyeResult {
     if (lock.isLocked) {
-        throw Exception("nooraEye shouldn't run more than 1 execution at a time")
+        throw Exception("nooraEye shouldn't run more than one execution at a time")
     }
     lock.lock()
-    val systemRuntime = Runtime.getRuntime()
-    runGarbageCollector(systemRuntime)
-    val memoryUsageBeforeExecution = systemRuntime.usedMemory()
+    val memoryUsageBeforeExecution = getReallyUsedMemory()
     val timestampBeforeExecution = System.currentTimeMillis()
     block()
     val timestampAfterExecution = System.currentTimeMillis()
-    val memoryUsageAfterExecution = systemRuntime.usedMemory()
+    val memoryUsageAfterExecution = getReallyUsedMemory()
     lock.unlock()
     return EyeResult(
         title = title,
@@ -56,39 +70,3 @@ fun nooraEye(
     )
 }
 
-private fun runGarbageCollector(systemRuntime: Runtime) {
-    (0..<3).forEach { _ -> systemRuntime.gc() }
-    Thread.sleep(500)
-}
-
-private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
-
-val B: MemoryFormatter = MemoryByteFormatter()
-val KB: MemoryFormatter = MemoryKilobyteFormatter()
-val MB: MemoryFormatter = MemoryMegabyteFormatter()
-
-fun Double.floorWithTwoDecimal(): Double {
-    val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.FLOOR
-    return df.format(this).toDouble()
-}
-
-fun Long.toKb(): Double = (this / 1024.0).floorWithTwoDecimal()
-fun Long.toMb(): Double = (this / 1048576.0).floorWithTwoDecimal()
-
-val M: TimeFormatter = TimeMillisecondFormatter()
-val S: TimeFormatter = TimeSecondFormatter()
-
-fun Long.toSecond(): Long = this / 1000
-
-fun Int.asKb(): Long {
-    return (this * 1024.0).toLong()
-}
-
-fun Int.asMb(): Long {
-    return (this * 1048576.0).toLong()
-}
-
-fun Int.asSecond(): Long {
-    return (this * 1000.0).toLong()
-}

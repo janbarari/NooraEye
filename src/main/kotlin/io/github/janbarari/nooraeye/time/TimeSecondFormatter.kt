@@ -23,10 +23,10 @@
 
 package io.github.janbarari.nooraeye.time
 
-import io.github.janbarari.nooraeye.toSecond
+import io.github.janbarari.nooraeye.millisToSecond
 
 class TimeSecondFormatter : TimeFormatter {
     override fun format(value: Long): String {
-        return "%ss".format(value.toSecond())
+        return "%ss".format(value.millisToSecond())
     }
 }

@@ -21,12 +21,31 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.byteToMegabyte
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
-class MemoryMegabyteFormatter : MemoryFormatter {
-    override fun format(value: Long): String {
-        return "%sMb".format(value.byteToMegabyte())
-    }
+fun Long.byteToMegabyte(): Double = (this / 1048576.0).floorWithTwoDecimal()
+
+fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
+
+fun Long.millisToSecond(): Long = this / 1000
+
+fun Int.kilobyte(): Long {
+    return (this * 1024.0).toLong()
+}
+
+fun Int.megabyte(): Long {
+    return (this * 1048576.0).toLong()
+}
+
+fun Int.asSecond(): Long {
+    return (this * 1000.0).toLong()
+}
+
+fun Double.floorWithTwoDecimal(): Double {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.FLOOR
+    return df.format(this).toDouble()
 }

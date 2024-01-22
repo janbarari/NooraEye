@@ -21,12 +21,9 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.byteToMegabyte
-
-class MemoryMegabyteFormatter : MemoryFormatter {
-    override fun format(value: Long): String {
-        return "%sMb".format(value.byteToMegabyte())
-    }
-}
+/**
+ * Returns the system used memory in bytes
+ */
+fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()

@@ -32,8 +32,23 @@ data class EyeResult(
     val executionDurationInMs: Long
 )
 
-fun EyeResult.prettyPrint(memoryFormatter: MemoryFormatter = B, timeFormatter: TimeFormatter = M) {
-    println("%s Eye Result".format(title))
-    println("Partial allocated memory: %s".format(memoryFormatter.format(partialMemoryUsageInByte)))
-    println("Executed in: %s".format(timeFormatter.format(executionDurationInMs)))
+fun EyeResult.prettyPrint(
+    memoryFormatter: MemoryFormatter = MemoryFormatters.byte,
+    timeFormatter: TimeFormatter = TimeFormatters.millis
+) {
+    val title = "%s Eye Result".format(title)
+    var consoleLength = 6 + title.length
+    consoleLength += if (memoryFormatter.format(partialMemoryUsageInByte).length > timeFormatter.format(executionDurationInMs).length) {
+        memoryFormatter.format(partialMemoryUsageInByte).length
+    } else {
+        timeFormatter.format(executionDurationInMs).length
+    }
+    ConsolePrinter(consoleLength).run {
+        printFirstLine()
+        printLine(title)
+        printBreakLine()
+        printLine("Memory usage", memoryFormatter.format(partialMemoryUsageInByte))
+        printLine("Executed in", timeFormatter.format(executionDurationInMs))
+        printLastLine()
+    }
 }
