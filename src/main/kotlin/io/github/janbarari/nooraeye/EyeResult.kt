@@ -28,8 +28,12 @@ import io.github.janbarari.nooraeye.time.TimeFormatter
 
 data class EyeResult(
     val title: String,
-    val partialMemoryUsageInByte: Long,
-    val executionDurationInMs: Long
+    val memoryUsageInByte: Long = 0,
+    val executionDurationInMs: Long = 0,
+    val isMemoryAccurate: Boolean = false,
+    val gcTriggerCount: Long = 0,
+    val isRanOutOfMemory: Boolean = false,
+    val maximumReachedHeapMemoryInByte: Long = 0
 )
 
 fun EyeResult.prettyPrint(
@@ -37,18 +41,41 @@ fun EyeResult.prettyPrint(
     timeFormatter: TimeFormatter = TimeFormatters.millis
 ) {
     val title = "%s Eye Result".format(title)
-    var consoleLength = 6 + title.length
-    consoleLength += if (memoryFormatter.format(partialMemoryUsageInByte).length > timeFormatter.format(executionDurationInMs).length) {
-        memoryFormatter.format(partialMemoryUsageInByte).length
-    } else {
-        timeFormatter.format(executionDurationInMs).length
+
+    if (isRanOutOfMemory) {
+        val consoleLength = 8 + title.length + MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte).length
+        ConsolePrinter(consoleLength).run {
+            printFirstLine()
+            printLine(title)
+            printBreakLine()
+            printLine("Ran out in", MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte))
+            printLastLine()
+        }
+        return
     }
+
+    val note = "If GC happens during the execution of the process, memory precision will drop."
+    var consoleLength = 16 + title.length
+    val memoryUsageTextLength = memoryFormatter.format(memoryUsageInByte).length
+    val executionDurationTextLength = timeFormatter.format(executionDurationInMs).length
+    consoleLength += if (memoryUsageTextLength > executionDurationTextLength) {
+        memoryUsageTextLength
+    } else {
+        executionDurationTextLength
+    }
+
     ConsolePrinter(consoleLength).run {
         printFirstLine()
         printLine(title)
         printBreakLine()
-        printLine("Memory usage", memoryFormatter.format(partialMemoryUsageInByte))
-        printLine("Executed in", timeFormatter.format(executionDurationInMs))
+        printLine("Memory Usage", memoryFormatter.format(memoryUsageInByte))
+        printLine("Memory Precision", if (isMemoryAccurate) "Accurate" else "Approximate")
+        printLine("GC Triggers", gcTriggerCount.toString())
+        printLine("Executed In", timeFormatter.format(executionDurationInMs))
+        printBreakLine('-')
+        splitText(note).forEach { note ->
+            printLine(note)
+        }
         printLastLine()
     }
 }

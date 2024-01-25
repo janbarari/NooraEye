@@ -25,6 +25,11 @@ package io.github.janbarari.nooraeye
 
 import java.lang.management.ManagementFactory
 
+data class MemoryUsage(
+    var usedMemoryInBytes: Long = 0L,
+    var gcCount: Long = 0L
+)
+
 /**
  * Returns the memory gc count
  */
@@ -42,31 +47,113 @@ private fun getGcCount(): Long {
 /**
  * Returns really used memory by comparing the gc count before and after System.gc() invoked.
  */
-private fun getReallyUsedMemory(): Long {
+private fun getSafeMemoryUsage(): MemoryUsage {
     val before = getGcCount()
-    System.gc()
+    ManagementFactory.getMemoryMXBean().gc()
     while (getGcCount() == before);
-    return Runtime.getRuntime().usedMemory()
+    val memoryUsage = MemoryUsage(
+        gcCount = getGcCount()
+    )
+    memoryUsage.usedMemoryInBytes = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
+    return memoryUsage
 }
 
 fun nooraEye(
     title: String,
     block: () -> Unit
-): EyeResult {
+): EyeResult  {
     if (lock.isLocked) {
         throw Exception("nooraEye shouldn't run more than one execution at a time")
     }
     lock.lock()
-    val memoryUsageBeforeExecution = getReallyUsedMemory()
-    val timestampBeforeExecution = System.currentTimeMillis()
-    block()
-    val timestampAfterExecution = System.currentTimeMillis()
-    val memoryUsageAfterExecution = getReallyUsedMemory()
+    var maximumReachedHeapMemoryInByte = 0L
+    val trackerThread = Thread {
+        try {
+            while (true) {
+                val usedHeap = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
+                if (usedHeap > maximumReachedHeapMemoryInByte) {
+                    maximumReachedHeapMemoryInByte = usedHeap
+                }
+                Thread.sleep(100)
+            }
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+        } catch (e: OutOfMemoryError){
+            Thread.currentThread().interrupt()
+        }
+    }
+    trackerThread.start()
+    val beforeExecutionTimestamp = System.currentTimeMillis()
+    val memoryUsageBeforeExecution = getSafeMemoryUsage()
+    var afterUnsafeMemoryUsage: Long = 0
+    var afterExecutionTimestamp: Long = 0
+    try {
+        block().also {
+            afterUnsafeMemoryUsage = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
+            afterExecutionTimestamp = System.currentTimeMillis()
+        }
+    } catch (exception: OutOfMemoryError) {
+        lock.unlock()
+        trackerThread.interrupt()
+        return EyeResult(
+            title = title,
+            isRanOutOfMemory = true,
+            maximumReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte
+        )
+    }
+    var isAccurate = true
+    var gcTriggerCount = 0L
+    val memoryUsageAfterExecution = MemoryUsage(
+        usedMemoryInBytes = afterUnsafeMemoryUsage,
+        gcCount = getGcCount()
+    )
+    if (memoryUsageAfterExecution.gcCount != memoryUsageBeforeExecution.gcCount) {
+        isAccurate = false
+        gcTriggerCount = memoryUsageAfterExecution.gcCount - memoryUsageBeforeExecution.gcCount
+    }
+    var memoryUsage = memoryUsageAfterExecution.usedMemoryInBytes - memoryUsageBeforeExecution.usedMemoryInBytes
+    if (memoryUsage < 0) {
+        memoryUsage = 0
+    }
     lock.unlock()
+    trackerThread.interrupt()
     return EyeResult(
         title = title,
-        partialMemoryUsageInByte = memoryUsageAfterExecution - memoryUsageBeforeExecution,
-        executionDurationInMs = timestampAfterExecution - timestampBeforeExecution
+        memoryUsageInByte = memoryUsage,
+        executionDurationInMs = afterExecutionTimestamp - beforeExecutionTimestamp,
+        isMemoryAccurate = isAccurate,
+        gcTriggerCount = gcTriggerCount
     )
 }
 
+fun printComparison(a: EyeResult, b: EyeResult) {
+    var memoryComparison = ""
+    var timeComparison = ""
+    if (a.memoryUsageInByte < b.memoryUsageInByte) {
+        val difference: Double =
+            (b.memoryUsageInByte.toDouble() / a.memoryUsageInByte.toDouble()).floorWithTwoDecimal()
+        memoryComparison = "${a.title} allocates ${difference}x less memory"
+    }
+    if (a.memoryUsageInByte > b.memoryUsageInByte) {
+        val difference: Double =
+            (a.memoryUsageInByte.toDouble() / b.memoryUsageInByte.toDouble()).floorWithTwoDecimal()
+        memoryComparison = "${b.title} allocates ${difference}x less memory"
+    }
+    if (a.executionDurationInMs < b.executionDurationInMs) {
+        val difference: Double =
+            (b.executionDurationInMs.toDouble() / a.executionDurationInMs.toDouble()).floorWithTwoDecimal()
+        timeComparison = "${a.title} executed ${difference}x faster"
+    }
+    if (a.executionDurationInMs > b.executionDurationInMs) {
+        val difference: Double =
+            (a.executionDurationInMs.toDouble() / b.executionDurationInMs.toDouble()).floorWithTwoDecimal()
+        timeComparison = "${b.title} executed ${difference}x faster"
+    }
+    val length = 6 + if (memoryComparison.length > timeComparison.length) memoryComparison.length else timeComparison.length
+    ConsolePrinter(length).run {
+        printFirstLine()
+        printLine(memoryComparison)
+        printLine(timeComparison)
+        printLastLine()
+    }
+}

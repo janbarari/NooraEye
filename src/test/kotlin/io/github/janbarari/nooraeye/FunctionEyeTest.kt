@@ -29,11 +29,14 @@ class FunctionEyeTest {
 
     @Test
     fun `check functionEye function works correctly`() {
+        nooraEye("Test1") {
 
+        }
     }
 
     @Test
     fun `check assertFunctionEye passes when execution doesn't exceed the thresholds`() {
+
     }
 
     @Test
