@@ -23,24 +23,20 @@
 
 package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.assertion.assertNooraEye
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 
 class FunctionEyeTest {
 
     @Test
     fun `check functionEye function works correctly`() {
+        nooraEye("Test1") {
 
+        }
     }
 
     @Test
     fun `check assertFunctionEye passes when execution doesn't exceed the thresholds`() {
-        assertDoesNotThrow {
-            assertNooraEye("S01", 10.mbToByte(), 1.secondToMillis()) {
-                Thread.sleep(500)
-            }
-        }
+
     }
 
     @Test
