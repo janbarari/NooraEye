@@ -41,34 +41,9 @@ fun EyeResult.prettyPrint(
     timeFormatter: TimeFormatter = TimeFormatters.millis
 ) {
     val title = "%s Eye Result".format(title)
-    if (!isRanOutOfMemory) {
-        val note = "If GC happens during the execution of the process, memory precision will drop."
-        var consoleLength = 16 + title.length
-        consoleLength += if (memoryFormatter.format(memoryUsageInByte).length > timeFormatter.format(
-                executionDurationInMs
-            ).length
-        ) {
-            memoryFormatter.format(memoryUsageInByte).length
-        } else {
-            timeFormatter.format(executionDurationInMs).length
-        }
-        ConsolePrinter(consoleLength).run {
-            printFirstLine()
-            printLine(title)
-            printBreakLine()
-            printLine("Memory usage", memoryFormatter.format(memoryUsageInByte))
-            printLine("Memory precision", if (isMemoryAccurate) "Accurate" else "Approximate")
-            printLine("GC Triggers", gcTriggerCount.toString())
-            printLine("Executed in", timeFormatter.format(executionDurationInMs))
-            printBreakLine('-')
-            splitText(note).forEach {
-                printLine(it)
-            }
-            printLastLine()
-        }
-    } else {
-        var consoleLength = 8 + title.length
-        consoleLength += MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte).length
+
+    if (isRanOutOfMemory) {
+        val consoleLength = 8 + title.length + MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte).length
         ConsolePrinter(consoleLength).run {
             printFirstLine()
             printLine(title)
@@ -76,5 +51,31 @@ fun EyeResult.prettyPrint(
             printLine("Ran out in", MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte))
             printLastLine()
         }
+        return
+    }
+
+    val note = "If GC happens during the execution of the process, memory precision will drop."
+    var consoleLength = 16 + title.length
+    val memoryUsageTextLength = memoryFormatter.format(memoryUsageInByte).length
+    val executionDurationTextLength = timeFormatter.format(executionDurationInMs).length
+    consoleLength += if (memoryUsageTextLength > executionDurationTextLength) {
+        memoryUsageTextLength
+    } else {
+        executionDurationTextLength
+    }
+
+    ConsolePrinter(consoleLength).run {
+        printFirstLine()
+        printLine(title)
+        printBreakLine()
+        printLine("Memory Usage", memoryFormatter.format(memoryUsageInByte))
+        printLine("Memory Precision", if (isMemoryAccurate) "Accurate" else "Approximate")
+        printLine("GC Triggers", gcTriggerCount.toString())
+        printLine("Executed In", timeFormatter.format(executionDurationInMs))
+        printBreakLine('-')
+        splitText(note).forEach { note ->
+            printLine(note)
+        }
+        printLastLine()
     }
 }

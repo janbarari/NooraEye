@@ -40,8 +40,8 @@ fun Int.mbToByte(): Long {
     return (this * 1048576.0).toLong()
 }
 
-fun Int.secondToMillis(value: Int): Long {
-    return (value * 1000.0).toLong()
+fun Int.secondToMillis(): Long {
+    return (this * 1000.0).toLong()
 }
 
 fun Double.floorWithTwoDecimal(): Double {

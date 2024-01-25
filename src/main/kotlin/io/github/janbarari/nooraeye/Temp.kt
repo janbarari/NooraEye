@@ -27,12 +27,12 @@ fun deleteTestFile() {
 }
 
 fun main() {
-    nooraEye("S0") {
-        (0..100000000000).toList().reversed()
-    }.prettyPrint(
-        memoryFormatter = MemoryFormatters.mb,
-        timeFormatter = TimeFormatters.millis
-    )
+//    nooraEye("S0") {
+//        (0..100000000000).toList().reversed()
+//    }.prettyPrint(
+//        memoryFormatter = MemoryFormatters.mb,
+//        timeFormatter = TimeFormatters.millis
+//    )
 
     createTestFile()
 
@@ -64,112 +64,3 @@ fun main() {
 
     printComparison(s2, s1)
 }
-
-private fun garbageCollectorMXBean() {
-    val gcConsole = ConsolePrinter(35)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Garbage Collector Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getGarbageCollectorMXBeans().forEach {
-        gcConsole.printLine("Name", it.name)
-        gcConsole.printLine("isValid", it.isValid.toString())
-        gcConsole.printLine("Collection count", it.collectionCount.toString())
-        gcConsole.printLine("Collection time", it.collectionTime.toString())
-        gcConsole.printBreakLine('-')
-    }
-    gcConsole.printLastLine()
-}
-
-private fun memoryMXBean() {
-    val gcConsole = ConsolePrinter(35)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Memory Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getMemoryMXBean().heapMemoryUsage.also {
-        gcConsole.printLine("Heap")
-        gcConsole.printBreakLine('-')
-        gcConsole.printLine("Init", MemoryFormatters.mb.format(it.init))
-        gcConsole.printLine("Used", MemoryFormatters.mb.format(it.used))
-        gcConsole.printLine("Committed", MemoryFormatters.mb.format(it.committed))
-        gcConsole.printLine("Max", MemoryFormatters.mb.format(it.max))
-        gcConsole.printBreakLine()
-    }
-    ManagementFactory.getMemoryMXBean().nonHeapMemoryUsage.also {
-        gcConsole.printLine("Non Heap")
-        gcConsole.printBreakLine('-')
-        gcConsole.printLine("Init", MemoryFormatters.mb.format(it.init))
-        gcConsole.printLine("Used", MemoryFormatters.mb.format(it.used))
-        gcConsole.printLine("Committed", MemoryFormatters.mb.format(it.committed))
-        gcConsole.printLine("Max", MemoryFormatters.mb.format(it.max))
-        gcConsole.printBreakLine()
-    }
-    gcConsole.printLine("Pending Finalization", "${ManagementFactory.getMemoryMXBean().objectPendingFinalizationCount}")
-    gcConsole.printLine("Is Verbose", ManagementFactory.getMemoryMXBean().isVerbose.toString())
-    gcConsole.printLastLine()
-}
-
-private fun threadMXBean() {
-    val gcConsole = ConsolePrinter(35)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Thread Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getThreadMXBean().also {
-        gcConsole.printLine("Threads", it.threadCount.toString())
-        gcConsole.printLine("Started Threads", it.totalStartedThreadCount.toString())
-        gcConsole.printLine("Current Thread CPU Time", it.currentThreadCpuTime.toString())
-        gcConsole.printLine("Current Thread User Time", it.currentThreadUserTime.toString())
-    }
-    gcConsole.printLastLine()
-}
-
-private fun runtimeMXBean() {
-    val gcConsole = ConsolePrinter(45)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Runtime Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getRuntimeMXBean().also {
-        gcConsole.printLine("Name", it.name)
-        gcConsole.printLine("VM", it.vmName)
-        gcConsole.printLine("VM Vendor", it.vmVendor)
-        gcConsole.printLine("Spec", it.specName)
-    }
-    gcConsole.printLastLine()
-}
-
-private fun memoryPoolMXBean() {
-    val gcConsole = ConsolePrinter(45)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Memory Pool Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getMemoryPoolMXBeans().forEach {
-        gcConsole.printLine("Name", it.name)
-        gcConsole.printLine("Type", it.type.name)
-        gcConsole.printLine("Used", MemoryFormatters.mb.format(it.usage.used))
-        gcConsole.printBreakLine('-')
-    }
-    gcConsole.printLastLine()
-}
-
-private fun memoryManagerMXBean() {
-    val gcConsole = ConsolePrinter(25)
-    gcConsole.printFirstLine()
-    gcConsole.printLine("Memory Manager Bean")
-    gcConsole.printBreakLine()
-    ManagementFactory.getMemoryManagerMXBeans().forEach {
-        gcConsole.printLine(it.name)
-    }
-    gcConsole.printLastLine()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-

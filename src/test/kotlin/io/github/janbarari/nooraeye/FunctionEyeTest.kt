@@ -37,8 +37,8 @@ class FunctionEyeTest {
     @Test
     fun `check assertFunctionEye passes when execution doesn't exceed the thresholds`() {
         assertDoesNotThrow {
-            assertNooraEye("S01", 10.mbToByte(), 100) {
-
+            assertNooraEye("S01", 10.mbToByte(), 1.secondToMillis()) {
+                Thread.sleep(500)
             }
         }
     }

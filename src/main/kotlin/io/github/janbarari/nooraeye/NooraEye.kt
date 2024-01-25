@@ -149,7 +149,7 @@ fun printComparison(a: EyeResult, b: EyeResult) {
             (a.executionDurationInMs.toDouble() / b.executionDurationInMs.toDouble()).floorWithTwoDecimal()
         timeComparison = "${b.title} executed ${difference}x faster"
     }
-    val length = if (memoryComparison.length > timeComparison.length) memoryComparison.length else timeComparison.length
+    val length = 6 + if (memoryComparison.length > timeComparison.length) memoryComparison.length else timeComparison.length
     ConsolePrinter(length).run {
         printFirstLine()
         printLine(memoryComparison)
