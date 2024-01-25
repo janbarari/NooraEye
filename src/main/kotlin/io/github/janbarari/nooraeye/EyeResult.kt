@@ -28,9 +28,12 @@ import io.github.janbarari.nooraeye.time.TimeFormatter
 
 data class EyeResult(
     val title: String,
-    val partialMemoryUsageInByte: Long,
-    val executionDurationInMs: Long,
-    val isAccurate: Boolean
+    val memoryUsageInByte: Long = 0,
+    val executionDurationInMs: Long = 0,
+    val isMemoryAccurate: Boolean = false,
+    val gcTriggerCount: Long = 0,
+    val isRanOutOfMemory: Boolean = false,
+    val maximumReachedHeapMemoryInByte: Long = 0
 )
 
 fun EyeResult.prettyPrint(
@@ -38,27 +41,40 @@ fun EyeResult.prettyPrint(
     timeFormatter: TimeFormatter = TimeFormatters.millis
 ) {
     val title = "%s Eye Result".format(title)
-    val note = listOf("If GC happens during execution", "the accuracy will be \"Low\".")
-    var consoleLength = 13 + title.length
-    consoleLength += if (memoryFormatter.format(partialMemoryUsageInByte).length > timeFormatter.format(executionDurationInMs).length) {
-        memoryFormatter.format(partialMemoryUsageInByte).length
-    } else {
-        timeFormatter.format(executionDurationInMs).length
-    }
-    ConsolePrinter(consoleLength).run {
-        printFirstLine()
-        printLine(title)
-        printBreakLine()
-        printLine("Memory usage", memoryFormatter.format(partialMemoryUsageInByte))
-        printLine("Executed in", timeFormatter.format(executionDurationInMs))
-        printLine("Accuracy", if(isAccurate) "High" else "Low")
-        printBreakLine('-')
-        if (consoleLength > note[0].length + note[1].length) {
-            printLine("%s %s".format(note[0], note[1]))
+    if (!isRanOutOfMemory) {
+        val note = "If GC happens during the execution of the process, memory precision will drop."
+        var consoleLength = 16 + title.length
+        consoleLength += if (memoryFormatter.format(memoryUsageInByte).length > timeFormatter.format(
+                executionDurationInMs
+            ).length
+        ) {
+            memoryFormatter.format(memoryUsageInByte).length
         } else {
-            printLine(note[0])
-            printLine(note[1])
+            timeFormatter.format(executionDurationInMs).length
         }
-        printLastLine()
+        ConsolePrinter(consoleLength).run {
+            printFirstLine()
+            printLine(title)
+            printBreakLine()
+            printLine("Memory usage", memoryFormatter.format(memoryUsageInByte))
+            printLine("Memory precision", if (isMemoryAccurate) "Accurate" else "Approximate")
+            printLine("GC Triggers", gcTriggerCount.toString())
+            printLine("Executed in", timeFormatter.format(executionDurationInMs))
+            printBreakLine('-')
+            splitText(note).forEach {
+                printLine(it)
+            }
+            printLastLine()
+        }
+    } else {
+        var consoleLength = 8 + title.length
+        consoleLength += MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte).length
+        ConsolePrinter(consoleLength).run {
+            printFirstLine()
+            printLine(title)
+            printBreakLine()
+            printLine("Ran out in", MemoryFormatters.mb.format(maximumReachedHeapMemoryInByte))
+            printLastLine()
+        }
     }
 }

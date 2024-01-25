@@ -56,6 +56,24 @@ class ConsolePrinter(private var blockCharWidth: Int) {
         println(output.toString())
     }
 
+    fun splitText(text: String): List<String> {
+        val result = mutableListOf<String>()
+        val builder = StringBuilder()
+        for (word in text.split(' ')) {
+            if (builder.length + word.length > blockCharWidth - 2) {
+                result.add(builder.toString())
+                builder.clear()
+            }
+            builder.append(word).append(' ')
+        }
+        return if (builder.isNotEmpty()) {
+            result.add(builder.toString())
+            result
+        } else {
+            listOf(text)
+        }
+    }
+
     fun printLine(left: String = "", right: String = "") {
         val output = StringBuilder()
         output.append(" ")
