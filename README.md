@@ -18,7 +18,7 @@ implementation 'com.github.janbarari:NooraEye:0.1-beta5'
 Usage
 -----
 ```kotlin
-nooraEye(title = "My Code") {
+nooraEye(title = "Test #1") {
     // put your codes here
 }.prettyPrint(
     memoryFormatter = MemoryFormatters.mb,
