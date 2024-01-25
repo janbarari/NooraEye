@@ -12,7 +12,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.janbarari:NooraEye:0.1-beta3'
+implementation 'com.github.janbarari:NooraEye:0.1-beta5'
 ```
 
 Usage
