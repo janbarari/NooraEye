@@ -28,7 +28,7 @@ plugins {
 
 val artifact: String = "NooraEye"
 group = "io.github.janbarari"
-version = "0.1-beta4"
+version = "0.1-beta5"
 
 repositories {
     mavenCentral()
