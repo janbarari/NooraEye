@@ -29,8 +29,11 @@ import io.github.janbarari.nooraeye.prettyPrint
 fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: () -> Unit) {
     val eyeResult = nooraEye(title, block)
     eyeResult.prettyPrint()
+    if (eyeResult.isRanOutOfMemory) {
+        throw NooraEyeRanOutOfMemoryException("Ran out of memory in %s bytes".format(eyeResult.maximumReachedHeapMemoryInByte))
+    }
     if (eyeResult.memoryUsageInByte > memoryThresholdInByte) {
-        throw FunctionEyeAssertionException(
+        throw NooraEyeExceedMemoryException(
             ("Extra Memory Used! Target threshold was %s bytes but it used %s bytes")
                 .format(
                     memoryThresholdInByte,
@@ -39,8 +42,8 @@ fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs
         )
     }
     if (eyeResult.executionDurationInMs > timeThresholdInMs) {
-        throw FunctionEyeAssertionException(
-            ("Extra Time Used! Target threshold was %s ms but it took %s ms")
+        throw NooraEyeExceedExecutionException(
+            ("Extra Time Took! Target threshold was %s ms but it took %s ms")
                     .format(
                         timeThresholdInMs,
                         eyeResult.executionDurationInMs

@@ -23,4 +23,8 @@
 
 package io.github.janbarari.nooraeye.assertion
 
-class FunctionEyeAssertionException(message: String): Throwable(message)
+class NooraEyeExceedMemoryException(message: String): Throwable(message)
+
+class NooraEyeExceedExecutionException(message: String): Throwable(message)
+
+class NooraEyeRanOutOfMemoryException(message: String): Throwable(message)
