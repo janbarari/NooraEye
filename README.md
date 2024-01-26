@@ -25,7 +25,7 @@ nooraEye(title = "Test #1") {
     timeFormatter = TimeFormatters.millis
 )
 ```
-Preview
+Output
 -----
 <img width="369" alt="Screenshot 2024-01-25 at 10 58 43 PM" src="https://github.com/janbarari/NooraEye/assets/12547060/d79d66fd-b7e5-4b72-81d0-cef28803939c">
 
