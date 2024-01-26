@@ -6,8 +6,10 @@ NooraEye seamlessly measures memory usage, execution time, and provides memory l
 Installation
 ------------
 ```gradle
-allprojects {
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 }
