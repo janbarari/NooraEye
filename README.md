@@ -71,5 +71,5 @@ Copyright (C) 2024 Mehdi Janbarari (@janbarari)
 NooraEye binaries and source code can be used according to the [MIT License](LICENSE).
 
 نور چشمانش امید روزهای تلخ من بود ❤️
-<br>
-به پاس روزهای خوبی که سپری شد
+
+تقدیم به روزهای خوبی که با نورا سپری شد
