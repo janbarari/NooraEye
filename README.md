@@ -3,6 +3,16 @@
 
 NooraEye seamlessly measures memory usage, execution time, and provides memory leak information for your Kotlin algorithms and code blocks.
 
+What's the point of using it
+-----
+Struggling with slow apps and mysterious memory problems? NooraEye is your new best friend! It easily checks your Kotlin code for memory usage, how long things take, and even finds hidden memory leaks.
+
+Think of it this time you spent writing beautiful code, but it runs slow. NooraEye shows you why, like spotting memory spikes or long-running operations. Its simple interface helps you fix these issues quickly.
+
+This means faster development, cleaner code, and happier users! NooraEye gives you the data you need to make smart choices, optimize your app, and make it run like a champ.
+
+Ditch the guessing, embrace the power, and unlock your Kotlin expertise with NooraEye!
+
 Installation
 ------------
 ```gradle
@@ -35,24 +45,28 @@ Output
 Unit Tests
 ------
 ```kotlin
-assertThrows<NooraEyeExceedMemoryException> {
+assertDoesNotThrow<NooraEyeExceedMemoryException> {
     assertNooraEye("My Test 1", memoryThresholdInByte = 1000, timeThresholdInMs = 1000) {
         // Fails when memory usage exceeds the threshold
     }
 }
 
-assertThrows<NooraEyeExceedExecutionException> {
+assertDoesNotThrow<NooraEyeExceedExecutionException> {
     assertNooraEye("My Test 2", memoryThresholdInByte = 1000, timeThresholdInMs = 1000) {
         // Fails when execution took longer than threshold
     }
 }
 
-assertThrows<NooraEyeRanOutOfMemoryException> {
+assertDoesNotThrow<NooraEyeRanOutOfMemoryException> {
     assertNooraEye("My Test 3", memoryThresholdInByte = 1000, timeThresholdInMs = 1000) {
         // Fail when process ran out of memory
     }
 }
 ```
+
+نور چشمانش امید روزهای تلخ من بود ❤️
+<br>
+به پاس روزهای خوبی که سپری شد
 
 License
 -------
