@@ -21,12 +21,12 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.nooraeye.io
 
-import io.github.janbarari.nooraeye.byteToMegabyte
+import io.github.janbarari.nooraeye.byteToKilobyte
 
-internal class MemoryMegabyteFormatter : MemoryFormatter {
+internal class IOKilobyteFormatter : IOFormatter {
     override fun format(value: Long): String {
-        return "%sMb".format(value.byteToMegabyte())
+        return "%sKb".format(value.byteToKilobyte())
     }
 }

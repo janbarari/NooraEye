@@ -26,11 +26,11 @@ package io.github.janbarari.nooraeye
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-fun Long.byteToMegabyte(): Double = (this / 1048576.0).floorWithTwoDecimal()
+internal fun Long.byteToMegabyte(): Double = (this / 1048576.0).floorWithTwoDecimal()
 
-fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
+internal fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
 
-fun Long.millisToSecond(): Long = this / 1000
+internal fun Long.millisToSecond(): Long = this / 1000
 
 fun Int.kbToByte(): Long {
     return (this * 1024.0).toLong()
@@ -44,8 +44,12 @@ fun Int.secondToMillis(): Long {
     return (this * 1000.0).toLong()
 }
 
-fun Double.floorWithTwoDecimal(): Double {
-    val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.FLOOR
-    return df.format(this).toDouble()
+internal fun Double.floorWithTwoDecimal(): Double {
+    return try {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        df.format(this).toDouble()
+    } catch (e: NumberFormatException) {
+        0.0
+    }
 }

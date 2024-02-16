@@ -26,7 +26,7 @@ package io.github.janbarari.nooraeye
 /**
  * Prints the messages in the terminal console in a visual format.
  */
-class ConsolePrinter(private var blockCharWidth: Int) {
+internal class ConsolePrinter(private var blockCharWidth: Int) {
 
     init {
         blockCharWidth += 1

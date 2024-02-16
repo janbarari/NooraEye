@@ -21,11 +21,11 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.memory
+package io.github.janbarari.nooraeye.io
 
 import io.github.janbarari.nooraeye.byteToMegabyte
 
-internal class MemoryMegabyteFormatter : MemoryFormatter {
+internal class IOMegabyteFormatter : IOFormatter {
     override fun format(value: Long): String {
         return "%sMb".format(value.byteToMegabyte())
     }

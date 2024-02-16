@@ -23,6 +23,8 @@
 
 package io.github.janbarari.nooraeye
 
+import oshi.SystemInfo
+import oshi.hardware.CentralProcessor
 import java.lang.management.ManagementFactory
 
 data class MemoryUsage(
@@ -60,47 +62,96 @@ private fun getSafeMemoryUsage(): MemoryUsage {
 
 fun nooraEye(
     title: String,
-    block: () -> Unit
-): EyeResult  {
+    block: EyeProgress.() -> Unit
+): EyeResult {
     if (lock.isLocked) {
-        throw Exception("nooraEye shouldn't run more than one execution at a time")
+        throw Exception("nooraEye shouldn't run more than one operation at a time")
     }
     lock.lock()
+    val eyeProgress = EyeProgress(title)
+    val hardware = SystemInfo().hardware
+    val cpu = hardware.processor
+    var prevTicks = LongArray(CentralProcessor.TickType.entries.size)
     var maximumReachedHeapMemoryInByte = 0L
+    var averageCpuLoad = 0.0
+    var maxCpuLoad = -1.0
+
+    var beforeIOReadSizeInByte: Long
+    var beforeIOWriteSizeInByte: Long
+    var beforeIOReadOps: Long
+    var beforeIOWriteOps: Long
+    hardware.diskStores.run {
+        beforeIOReadSizeInByte = sumOf { it.readBytes }
+        beforeIOWriteSizeInByte = sumOf { it.writeBytes }
+        beforeIOReadOps = sumOf { it.reads }
+        beforeIOWriteOps = sumOf { it.writes }
+    }
+
+    var afterIOReadSizeInByte = 0L
+    var afterIOWriteSizeInByte = 0L
+    var afterIOReadOps = 0L
+    var afterIOWriteOps = 0L
+
+    var isTrackerActive = true
     val trackerThread = Thread {
         try {
-            while (true) {
+            while (isTrackerActive) {
                 val usedHeap = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
                 if (usedHeap > maximumReachedHeapMemoryInByte) {
                     maximumReachedHeapMemoryInByte = usedHeap
                 }
-                Thread.sleep(100)
+
+                hardware.diskStores.run {
+                    afterIOReadSizeInByte = sumOf { it.readBytes }
+                    afterIOWriteSizeInByte = sumOf { it.writeBytes }
+                    afterIOReadOps = sumOf { it.reads }
+                    afterIOWriteOps = sumOf { it.writes }
+                }
+
+                val cpuLoad = cpu.getSystemCpuLoadBetweenTicks(prevTicks) * 100
+                prevTicks = cpu.systemCpuLoadTicks
+                if (cpuLoad > 0.0) {
+                    averageCpuLoad = (averageCpuLoad + cpuLoad) / 2.0
+                    if (maxCpuLoad == 0.0 || maxCpuLoad < averageCpuLoad) {
+                        maxCpuLoad = averageCpuLoad
+                    }
+                    if (cpuLoad > (cpuLoad * 15 / 100) + averageCpuLoad) {
+                        maxCpuLoad = (maxCpuLoad + cpuLoad) / 2
+                    }
+                }
+
+                Thread.sleep(50)
             }
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-        } catch (e: OutOfMemoryError){
+        } catch (e: OutOfMemoryError) {
             Thread.currentThread().interrupt()
         }
     }
     trackerThread.start()
     val beforeExecutionTimestamp = System.currentTimeMillis()
     val memoryUsageBeforeExecution = getSafeMemoryUsage()
-    var afterUnsafeMemoryUsage: Long = 0
-    var afterExecutionTimestamp: Long = 0
+    var afterUnsafeMemoryUsage: Long
+    var afterExecutionTimestamp: Long
     try {
-        block().also {
+        block(eyeProgress).apply {
+            isTrackerActive = false
             afterUnsafeMemoryUsage = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
             afterExecutionTimestamp = System.currentTimeMillis()
         }
     } catch (exception: OutOfMemoryError) {
         lock.unlock()
         trackerThread.interrupt()
+        if (eyeProgress.isEyeProgressInitiated) {
+            eyeProgress.setProgress(100)
+        }
         return EyeResult(
             title = title,
             isRanOutOfMemory = true,
-            maximumReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte
+            maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte
         )
     }
+    trackerThread.interrupt()
     var isAccurate = true
     var gcTriggerCount = 0L
     val memoryUsageAfterExecution = MemoryUsage(
@@ -116,44 +167,22 @@ fun nooraEye(
         memoryUsage = 0
     }
     lock.unlock()
-    trackerThread.interrupt()
     return EyeResult(
         title = title,
-        memoryUsageInByte = memoryUsage,
-        executionDurationInMs = afterExecutionTimestamp - beforeExecutionTimestamp,
-        isMemoryAccurate = isAccurate,
-        gcTriggerCount = gcTriggerCount
-    )
-}
 
-fun printComparison(a: EyeResult, b: EyeResult) {
-    var memoryComparison = ""
-    var timeComparison = ""
-    if (a.memoryUsageInByte < b.memoryUsageInByte) {
-        val difference: Double =
-            (b.memoryUsageInByte.toDouble() / a.memoryUsageInByte.toDouble()).floorWithTwoDecimal()
-        memoryComparison = "${a.title} allocates ${difference}x less memory"
-    }
-    if (a.memoryUsageInByte > b.memoryUsageInByte) {
-        val difference: Double =
-            (a.memoryUsageInByte.toDouble() / b.memoryUsageInByte.toDouble()).floorWithTwoDecimal()
-        memoryComparison = "${b.title} allocates ${difference}x less memory"
-    }
-    if (a.executionDurationInMs < b.executionDurationInMs) {
-        val difference: Double =
-            (b.executionDurationInMs.toDouble() / a.executionDurationInMs.toDouble()).floorWithTwoDecimal()
-        timeComparison = "${a.title} executed ${difference}x faster"
-    }
-    if (a.executionDurationInMs > b.executionDurationInMs) {
-        val difference: Double =
-            (a.executionDurationInMs.toDouble() / b.executionDurationInMs.toDouble()).floorWithTwoDecimal()
-        timeComparison = "${b.title} executed ${difference}x faster"
-    }
-    val length = 6 + if (memoryComparison.length > timeComparison.length) memoryComparison.length else timeComparison.length
-    ConsolePrinter(length).run {
-        printFirstLine()
-        printLine(memoryComparison)
-        printLine(timeComparison)
-        printLastLine()
-    }
+        averageCpuLoad = averageCpuLoad,
+        maxCpuLoad = maxCpuLoad,
+
+        memoryUsageInByte = memoryUsage,
+        maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte,
+        isMemoryAccurate = isAccurate,
+        gcTriggerCount = gcTriggerCount,
+
+        ioReadSizeInByte = afterIOReadSizeInByte - beforeIOReadSizeInByte,
+        ioWriteSizeInByte = afterIOWriteSizeInByte - beforeIOWriteSizeInByte,
+        ioReadOps = afterIOReadOps - beforeIOReadOps,
+        ioWriteOps = afterIOWriteOps - beforeIOWriteOps,
+
+        executionDurationInMs = afterExecutionTimestamp - beforeExecutionTimestamp,
+    )
 }

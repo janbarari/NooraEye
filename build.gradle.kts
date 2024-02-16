@@ -22,21 +22,24 @@
  */
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     `maven-publish`
 }
 
 val artifact: String = "NooraEye"
 group = "io.github.janbarari"
-version = "0.1-beta5"
+version = "0.1-beta6"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")
+    implementation("com.github.oshi:oshi-core:6.4.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1")
 }
 
 tasks.test {

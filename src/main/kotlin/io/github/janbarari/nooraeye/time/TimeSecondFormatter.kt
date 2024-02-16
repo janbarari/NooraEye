@@ -25,7 +25,7 @@ package io.github.janbarari.nooraeye.time
 
 import io.github.janbarari.nooraeye.millisToSecond
 
-class TimeSecondFormatter : TimeFormatter {
+internal class TimeSecondFormatter : TimeFormatter {
     override fun format(value: Long): String {
         return "%ss".format(value.millisToSecond())
     }
