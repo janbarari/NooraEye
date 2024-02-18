@@ -1,17 +1,17 @@
 # Noora Eye (چشم نورا)
 [![](https://jitpack.io/v/janbarari/NooraEye.svg)](https://jitpack.io/#janbarari/NooraEye)
 
-NooraEye seamlessly measures memory usage, execution time, and provides memory leak information for your Kotlin algorithms and code blocks.
+NooraEye seamlessly measures memory usage, CPU usage, IO usage, and execution time, and provides memory leak information for your Kotlin/Java algorithms and code blocks.
 
 What's the point of using it
 -----
-Struggling with slow apps and mysterious memory problems? NooraEye is your new best friend! It easily checks your Kotlin code for memory usage, how long things take, and even finds hidden memory leaks.
+Struggling with slow apps and mysterious memory, disk(IO), CPU problems? NooraEye is your new best friend! It easily checks your code.
 
 Think of it this time you spent writing beautiful code, but it runs slow. NooraEye shows you why, like spotting memory spikes or long-running operations. Its simple interface helps you fix these issues quickly.
 
 This means faster development, cleaner code, and happier users! NooraEye gives you the data you need to make smart choices, optimize your app, and make it run like a champ.
 
-Ditch the guessing, embrace the power, and unlock your Kotlin expertise with NooraEye!
+Ditch the guessing, embrace the power, and unlock your expertise with NooraEye!
 
 Installation
 ------------
@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     }
 }
 
-implementation 'com.github.janbarari:NooraEye:0.1-beta5'
+implementation 'com.github.janbarari:NooraEye:0.1-beta6'
 ```
 
 Usage
@@ -39,7 +39,7 @@ nooraEye(title = "Test #1") {
 ```
 Output
 -----
-<img width="369" alt="Screenshot 2024-01-25 at 10 58 43 PM" src="https://github.com/janbarari/NooraEye/assets/12547060/d79d66fd-b7e5-4b72-81d0-cef28803939c">
+<img width="500" alt="Screenshot 2024-01-25 at 10 58 43 PM" src="https://github.com/janbarari/NooraEye/assets/12547060/08de0a95-8be2-41d6-8ebc-fc748bb340d9">
 
 
 Unit Tests
