@@ -153,8 +153,9 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
         } catch (e: OutOfMemoryError) {
             Thread.currentThread().interrupt()
         }
+    }.apply {
+        start()
     }
-    trackerThread.start()
 
     val beforeExecutionTimestamp = System.currentTimeMillis()
     val memoryUsageBeforeExecution = getSafeMemoryUsage()
@@ -162,6 +163,7 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
     var afterExecutionTimestamp: Long
     try {
         block(eyeProgress).apply {
+            isTrackerActive = false
             afterUnsafeMemoryUsage = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
             afterExecutionTimestamp = System.currentTimeMillis()
         }
@@ -177,7 +179,6 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
             maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte
         )
     }
-    isTrackerActive = false
     trackerThread.interrupt()
 
     var isMemoryPrecisionAccurate = true
@@ -212,4 +213,16 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
 
         executionDurationInMs = (afterExecutionTimestamp - beforeExecutionTimestamp).coerceAtLeast(0L),
     )
+}
+
+fun Int.kbToByte(): Long {
+    return (this * 1024.0).toLong()
+}
+
+fun Int.mbToByte(): Long {
+    return (this * 1048576.0).toLong()
+}
+
+fun Int.secondToMillis(): Long {
+    return (this * 1000.0).toLong()
 }

@@ -27,8 +27,6 @@ import io.github.janbarari.nooraeye.assertion.NooraEyeExceedExecutionException
 import io.github.janbarari.nooraeye.assertion.NooraEyeExceedMemoryException
 import io.github.janbarari.nooraeye.assertion.NooraEyeRanOutOfMemoryException
 import io.github.janbarari.nooraeye.assertion.assertNooraEye
-import io.github.janbarari.nooraeye.util.mbToByte
-import io.github.janbarari.nooraeye.util.secondToMillis
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 

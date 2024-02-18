@@ -21,13 +21,28 @@
  * SOFTWARE.
  */
 
+@file:JvmName("AssertNooraEye")
+
 package io.github.janbarari.nooraeye.assertion
 
 import io.github.janbarari.nooraeye.EyeProgress
+import io.github.janbarari.nooraeye.NooraEyeMultipleOperationException
+import io.github.janbarari.nooraeye.memory.MemoryFormatters
 import io.github.janbarari.nooraeye.nooraEye
 
+@Throws(
+    NooraEyeMultipleOperationException::class,
+    NooraEyeRanOutOfMemoryException::class,
+    NooraEyeExceedMemoryException::class,
+    NooraEyeExceedExecutionException::class
+)
 fun assertNooraEye(title: String, memoryThresholdInByte: Long, timeThresholdInMs: Long, block: EyeProgress.() -> Unit) {
-    val eyeResult = nooraEye(title, block).apply { prettyPrint() }
+    val eyeResult = nooraEye(title, block)
+        .apply {
+            prettyPrint(
+                memoryFormatter = MemoryFormatters.kb
+            )
+        }
 
     if (eyeResult.isRanOutOfMemory) {
         throw NooraEyeRanOutOfMemoryException(eyeResult.maxReachedHeapMemoryInByte)

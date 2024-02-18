@@ -23,6 +23,9 @@
 
 package io.github.janbarari.nooraeye;
 
+import static org.junit.jupiter.api.Assertions.*;
+import io.github.janbarari.nooraeye.assertion.AssertNooraEye;
+import io.github.janbarari.nooraeye.assertion.NooraEyeExceedExecutionException;
 import io.github.janbarari.nooraeye.io.IoFormatters;
 import io.github.janbarari.nooraeye.memory.MemoryFormatters;
 import io.github.janbarari.nooraeye.time.TimeFormatters;
@@ -38,6 +41,18 @@ public class JavaCompatibilityTest {
     @Test
     void ensureNooraEyeCompatibilityTest() throws NooraEyeMultipleOperationException {
         ensureNooraEyeCompatibility();
+    }
+
+    @Test
+    void ensureAssertNooraEyeWorksFine() {
+        assertThrows(NooraEyeExceedExecutionException.class ,() -> AssertNooraEye.assertNooraEye("Execution", NooraEye.mbToByte(100), 100, eyeProgress -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return Unit.INSTANCE;
+        }));
     }
 
     static void ensureNooraEyeCompatibility() throws NooraEyeMultipleOperationException {
