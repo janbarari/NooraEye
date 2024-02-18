@@ -1,7 +1,7 @@
 # Noora Eye (چشم نورا)
 [![](https://jitpack.io/v/janbarari/NooraEye.svg)](https://jitpack.io/#janbarari/NooraEye)
 
-NooraEye seamlessly measures memory usage, CPU usage, IO usage, and execution time, and provides memory leak information for your Kotlin/Java algorithms and code blocks.
+NooraEye seamlessly measures memory usage, CPU usage, IO usage, execution time, and provides memory leak information for your Kotlin/Java algorithms and code blocks.
 
 What's the point of using it
 -----
