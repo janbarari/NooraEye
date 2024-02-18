@@ -28,7 +28,7 @@ import java.lang.management.ManagementFactory
 /**
  * Returns the memory gc count
  */
-internal fun getGcCount(): Long {
+fun getGcCount(): Long {
     return ManagementFactory.getGarbageCollectorMXBeans()
         .mapNotNull { it.collectionCount.takeIf { count -> count != -1L } }
         .sum()
@@ -38,7 +38,7 @@ internal fun getGcCount(): Long {
  * Returns really used memory by comparing the gc count before and after System.gc() invoked.
  */
 @Suppress("ControlFlowWithEmptyBody")
-internal fun getSafeMemoryUsage(): MemoryUsage {
+fun getSafeMemoryUsage(): MemoryUsage {
     val before = getGcCount()
     ManagementFactory.getMemoryMXBean().gc()
     while (getGcCount() == before);

@@ -23,7 +23,7 @@
 
 package io.github.janbarari.nooraeye.util
 
-internal class Lock {
+class Lock {
 
     var isLocked = false
 
@@ -36,4 +36,4 @@ internal class Lock {
     }
 }
 
-internal val lock = Lock()
+val lock = Lock()

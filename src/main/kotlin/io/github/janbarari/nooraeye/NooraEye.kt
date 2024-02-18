@@ -34,73 +34,73 @@ import oshi.hardware.CentralProcessor
 import java.lang.management.ManagementFactory
 import kotlin.jvm.Throws
 
-private var gcTriggerCount: Long = 0L
+var gcTriggerCount: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var memoryUsage: Long = 0L
+var memoryUsage: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var beforeIOReadSizeInByte: Long = 0L
+var beforeIOReadSizeInByte: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var beforeIOWriteSizeInByte: Long = 0L
+var beforeIOWriteSizeInByte: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var beforeIOReadOps: Long = 0L
+var beforeIOReadOps: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var beforeIOWriteOps: Long = 0L
+var beforeIOWriteOps: Long = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var afterIOReadSizeInByte = 0L
+var afterIOReadSizeInByte = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var afterIOWriteSizeInByte = 0L
+var afterIOWriteSizeInByte = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var afterIOReadOps = 0L
+var afterIOReadOps = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var afterIOWriteOps = 0L
+var afterIOWriteOps = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var maximumReachedHeapMemoryInByte = 0L
+var maximumReachedHeapMemoryInByte = 0L
     set(value) {
         field = if (value >= 0) value else 0
     }
 
-private var averageCpuLoad = 0.0
+var averageCpuLoad = 0.0
     set(value) {
         field = if (value >= 0.0) value else 0.0
     }
 
-private var maxCpuLoad = 0.0
+var maxCpuLoad = 0.0
     set(value) {
         field = if (value >= 0.0) value else 0.0
     }
 
 @Throws(NooraEyeMultipleOperationException::class)
-fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
+inline fun nooraEye(title: String, crossinline block: EyeProgress.() -> Unit): EyeResult {
     if (lock.isLocked) {
         throw NooraEyeMultipleOperationException()
     }

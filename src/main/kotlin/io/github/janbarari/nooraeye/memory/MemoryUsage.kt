@@ -23,7 +23,7 @@
 
 package io.github.janbarari.nooraeye.memory
 
-internal data class MemoryUsage(
+data class MemoryUsage(
     var usedMemoryInBytes: Long = 0L,
     var gcCount: Long = 0L
 )
