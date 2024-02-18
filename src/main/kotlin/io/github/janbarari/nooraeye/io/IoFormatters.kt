@@ -21,35 +21,9 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.nooraeye.io
 
-import java.math.RoundingMode
-import java.text.DecimalFormat
-
-internal fun Long.byteToMegabyte(): Double = (this / 1048576.0).floorWithTwoDecimal()
-
-internal fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
-
-internal fun Long.millisToSecond(): Long = this / 1000
-
-fun Int.kbToByte(): Long {
-    return (this * 1024.0).toLong()
-}
-
-fun Int.mbToByte(): Long {
-    return (this * 1048576.0).toLong()
-}
-
-fun Int.secondToMillis(): Long {
-    return (this * 1000.0).toLong()
-}
-
-internal fun Double.floorWithTwoDecimal(): Double {
-    return try {
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.FLOOR
-        df.format(this).toDouble()
-    } catch (e: NumberFormatException) {
-        0.0
-    }
+object IoFormatters {
+    @JvmField val kb: IoFormatter = IoKilobyteFormatter()
+    @JvmField val mb: IoFormatter = IoMegabyteFormatter()
 }

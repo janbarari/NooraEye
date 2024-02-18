@@ -21,12 +21,8 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.nooraeye.assertion
 
-import io.github.janbarari.nooraeye.util.millisToSecond
-
-internal class TimeSecondFormatter : TimeFormatter {
-    override fun format(value: Long): String {
-        return "%ss".format(value.millisToSecond())
-    }
-}
+class NooraEyeRanOutOfMemoryException(maxReachedHeapMemoryInByte: Long): Throwable(
+    "Ran out of memory in ~%s bytes".format(maxReachedHeapMemoryInByte)
+)

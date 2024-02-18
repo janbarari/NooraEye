@@ -21,8 +21,9 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.io
+package io.github.janbarari.nooraeye.memory
 
-interface IOFormatter {
-    fun format(value: Long): String
-}
+internal data class MemoryUsage(
+    var usedMemoryInBytes: Long = 0L,
+    var gcCount: Long = 0L
+)

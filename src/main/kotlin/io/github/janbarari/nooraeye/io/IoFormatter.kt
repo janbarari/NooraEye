@@ -21,15 +21,8 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.nooraeye.io
 
-import io.github.janbarari.nooraeye.memory.MemoryByteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryFormatter
-import io.github.janbarari.nooraeye.memory.MemoryKilobyteFormatter
-import io.github.janbarari.nooraeye.memory.MemoryMegabyteFormatter
-
-object MemoryFormatters {
-    val byte: MemoryFormatter = MemoryByteFormatter()
-    val kb: MemoryFormatter = MemoryKilobyteFormatter()
-    val mb: MemoryFormatter = MemoryMegabyteFormatter()
+interface IoFormatter {
+    fun format(value: Long): String
 }

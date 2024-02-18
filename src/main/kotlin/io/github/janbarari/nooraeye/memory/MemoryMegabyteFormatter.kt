@@ -23,7 +23,7 @@
 
 package io.github.janbarari.nooraeye.memory
 
-import io.github.janbarari.nooraeye.byteToMegabyte
+import io.github.janbarari.nooraeye.util.byteToMegabyte
 
 internal class MemoryMegabyteFormatter : MemoryFormatter {
     override fun format(value: Long): String {

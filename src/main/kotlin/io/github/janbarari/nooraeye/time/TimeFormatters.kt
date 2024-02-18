@@ -21,10 +21,9 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.assertion
+package io.github.janbarari.nooraeye.time
 
-class NooraEyeExceedMemoryException(message: String): Throwable(message)
-
-class NooraEyeExceedExecutionException(message: String): Throwable(message)
-
-class NooraEyeRanOutOfMemoryException(message: String): Throwable(message)
+object TimeFormatters {
+    @JvmField val millis: TimeFormatter = TimeMillisecondFormatter()
+    @JvmField val second: TimeFormatter = TimeSecondFormatter()
+}

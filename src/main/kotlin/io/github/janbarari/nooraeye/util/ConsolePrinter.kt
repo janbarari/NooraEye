@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.nooraeye.util
 
 /**
  * Prints the messages in the terminal console in a visual format.

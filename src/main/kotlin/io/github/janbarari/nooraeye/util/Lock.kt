@@ -21,12 +21,19 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.nooraeye.util
 
-import io.github.janbarari.nooraeye.util.millisToSecond
+internal class Lock {
 
-internal class TimeSecondFormatter : TimeFormatter {
-    override fun format(value: Long): String {
-        return "%ss".format(value.millisToSecond())
+    var isLocked = false
+
+    fun lock() = synchronized(this) {
+        isLocked = true
+    }
+
+    fun unlock() = synchronized(this) {
+        isLocked = false
     }
 }
+
+internal val lock = Lock()

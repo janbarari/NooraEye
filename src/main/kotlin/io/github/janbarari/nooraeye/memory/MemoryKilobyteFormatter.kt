@@ -23,7 +23,7 @@
 
 package io.github.janbarari.nooraeye.memory
 
-import io.github.janbarari.nooraeye.byteToKilobyte
+import io.github.janbarari.nooraeye.util.byteToKilobyte
 
 internal class MemoryKilobyteFormatter : MemoryFormatter {
     override fun format(value: Long): String {

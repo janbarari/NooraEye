@@ -21,12 +21,8 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.nooraeye.assertion
 
-import io.github.janbarari.nooraeye.util.millisToSecond
-
-internal class TimeSecondFormatter : TimeFormatter {
-    override fun format(value: Long): String {
-        return "%ss".format(value.millisToSecond())
-    }
-}
+class NooraEyeExceedExecutionException(timeThresholdInMs: Long, executionDurationInMs: Long): Throwable(
+    "Extra Time Took! Target threshold was %s ms but it took %s ms".format(timeThresholdInMs, executionDurationInMs)
+)

@@ -21,13 +21,12 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.nooraeye.io
 
-import io.github.janbarari.nooraeye.time.TimeFormatter
-import io.github.janbarari.nooraeye.time.TimeMillisecondFormatter
-import io.github.janbarari.nooraeye.time.TimeSecondFormatter
+import io.github.janbarari.nooraeye.util.byteToMegabyte
 
-object TimeFormatters {
-    val millis: TimeFormatter = TimeMillisecondFormatter()
-    val second: TimeFormatter = TimeSecondFormatter()
+internal class IoMegabyteFormatter : IoFormatter {
+    override fun format(value: Long): String {
+        return "%sMb".format(value.byteToMegabyte())
+    }
 }

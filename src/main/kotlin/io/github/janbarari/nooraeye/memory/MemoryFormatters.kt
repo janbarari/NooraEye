@@ -21,12 +21,10 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.nooraeye.memory
 
-import io.github.janbarari.nooraeye.util.millisToSecond
-
-internal class TimeSecondFormatter : TimeFormatter {
-    override fun format(value: Long): String {
-        return "%ss".format(value.millisToSecond())
-    }
+object MemoryFormatters {
+    @JvmField val byte: MemoryFormatter = MemoryByteFormatter()
+    @JvmField val kb: MemoryFormatter = MemoryKilobyteFormatter()
+    @JvmField val mb: MemoryFormatter = MemoryMegabyteFormatter()
 }

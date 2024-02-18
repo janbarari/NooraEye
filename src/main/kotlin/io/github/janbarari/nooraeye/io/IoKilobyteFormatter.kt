@@ -23,9 +23,9 @@
 
 package io.github.janbarari.nooraeye.io
 
-import io.github.janbarari.nooraeye.byteToKilobyte
+import io.github.janbarari.nooraeye.util.byteToKilobyte
 
-internal class IOKilobyteFormatter : IOFormatter {
+internal class IoKilobyteFormatter : IoFormatter {
     override fun format(value: Long): String {
         return "%sKb".format(value.byteToKilobyte())
     }

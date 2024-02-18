@@ -21,12 +21,35 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.time
+package io.github.janbarari.nooraeye.util
 
-import io.github.janbarari.nooraeye.util.millisToSecond
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
-internal class TimeSecondFormatter : TimeFormatter {
-    override fun format(value: Long): String {
-        return "%ss".format(value.millisToSecond())
+internal fun Long.byteToMegabyte(): Double = (this / 1048576.0).floorWithTwoDecimal()
+
+internal fun Long.byteToKilobyte(): Double = (this / 1024.0).floorWithTwoDecimal()
+
+internal fun Long.millisToSecond(): Long = this / 1000
+
+fun Int.kbToByte(): Long {
+    return (this * 1024.0).toLong()
+}
+
+fun Int.mbToByte(): Long {
+    return (this * 1048576.0).toLong()
+}
+
+fun Int.secondToMillis(): Long {
+    return (this * 1000.0).toLong()
+}
+
+internal fun Double.floorWithTwoDecimal(): Double {
+    return try {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        df.format(this).toDouble()
+    } catch (e: NumberFormatException) {
+        0.0
     }
 }

@@ -21,19 +21,8 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye
+package io.github.janbarari.nooraeye.assertion
 
-internal class Lock {
-
-    var isLocked = false
-
-    fun lock() = synchronized(this) {
-        isLocked = true
-    }
-
-    fun unlock() = synchronized(this) {
-        isLocked = false
-    }
-}
-
-internal val lock = Lock()
+class NooraEyeExceedMemoryException(memoryThresholdInByte: Long, memoryUsageInByte: Long): Throwable(
+    "Extra Memory Used! Target threshold was %s bytes but it used %s bytes".format(memoryThresholdInByte, memoryUsageInByte)
+)

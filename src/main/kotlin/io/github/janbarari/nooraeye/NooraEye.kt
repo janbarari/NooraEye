@@ -21,65 +21,97 @@
  * SOFTWARE.
  */
 
+@file:JvmName("NooraEye")
+
 package io.github.janbarari.nooraeye
 
+import io.github.janbarari.nooraeye.memory.MemoryUsage
+import io.github.janbarari.nooraeye.memory.getGcCount
+import io.github.janbarari.nooraeye.memory.getSafeMemoryUsage
+import io.github.janbarari.nooraeye.util.lock
 import oshi.SystemInfo
 import oshi.hardware.CentralProcessor
 import java.lang.management.ManagementFactory
+import kotlin.jvm.Throws
 
-data class MemoryUsage(
-    var usedMemoryInBytes: Long = 0L,
-    var gcCount: Long = 0L
-)
-
-/**
- * Returns the memory gc count
- */
-private fun getGcCount(): Long {
-    var sum: Long = 0
-    for (b in ManagementFactory.getGarbageCollectorMXBeans()) {
-        val count = b.collectionCount
-        if (count != -1L) {
-            sum += count
-        }
+private var gcTriggerCount: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
     }
-    return sum
-}
 
-/**
- * Returns really used memory by comparing the gc count before and after System.gc() invoked.
- */
-private fun getSafeMemoryUsage(): MemoryUsage {
-    val before = getGcCount()
-    ManagementFactory.getMemoryMXBean().gc()
-    while (getGcCount() == before);
-    val memoryUsage = MemoryUsage(
-        gcCount = getGcCount()
-    )
-    memoryUsage.usedMemoryInBytes = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
-    return memoryUsage
-}
+private var memoryUsage: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
 
-fun nooraEye(
-    title: String,
-    block: EyeProgress.() -> Unit
-): EyeResult {
+private var beforeIOReadSizeInByte: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var beforeIOWriteSizeInByte: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var beforeIOReadOps: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var beforeIOWriteOps: Long = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var afterIOReadSizeInByte = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var afterIOWriteSizeInByte = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var afterIOReadOps = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var afterIOWriteOps = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var maximumReachedHeapMemoryInByte = 0L
+    set(value) {
+        field = if (value >= 0) value else 0
+    }
+
+private var averageCpuLoad = 0.0
+    set(value) {
+        field = if (value >= 0.0) value else 0.0
+    }
+
+private var maxCpuLoad = 0.0
+    set(value) {
+        field = if (value >= 0.0) value else 0.0
+    }
+
+@Throws(NooraEyeMultipleOperationException::class)
+fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
     if (lock.isLocked) {
-        throw Exception("nooraEye shouldn't run more than one operation at a time")
+        throw NooraEyeMultipleOperationException()
     }
     lock.lock()
+
     val eyeProgress = EyeProgress(title)
     val hardware = SystemInfo().hardware
     val cpu = hardware.processor
     var prevTicks = LongArray(CentralProcessor.TickType.entries.size)
-    var maximumReachedHeapMemoryInByte = 0L
-    var averageCpuLoad = 0.0
-    var maxCpuLoad = -1.0
+    var isTrackerActive = true
 
-    var beforeIOReadSizeInByte: Long
-    var beforeIOWriteSizeInByte: Long
-    var beforeIOReadOps: Long
-    var beforeIOWriteOps: Long
     hardware.diskStores.run {
         beforeIOReadSizeInByte = sumOf { it.readBytes }
         beforeIOWriteSizeInByte = sumOf { it.writeBytes }
@@ -87,12 +119,6 @@ fun nooraEye(
         beforeIOWriteOps = sumOf { it.writes }
     }
 
-    var afterIOReadSizeInByte = 0L
-    var afterIOWriteSizeInByte = 0L
-    var afterIOReadOps = 0L
-    var afterIOWriteOps = 0L
-
-    var isTrackerActive = true
     val trackerThread = Thread {
         try {
             while (isTrackerActive) {
@@ -129,13 +155,13 @@ fun nooraEye(
         }
     }
     trackerThread.start()
+
     val beforeExecutionTimestamp = System.currentTimeMillis()
     val memoryUsageBeforeExecution = getSafeMemoryUsage()
     var afterUnsafeMemoryUsage: Long
     var afterExecutionTimestamp: Long
     try {
         block(eyeProgress).apply {
-            isTrackerActive = false
             afterUnsafeMemoryUsage = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
             afterExecutionTimestamp = System.currentTimeMillis()
         }
@@ -151,22 +177,23 @@ fun nooraEye(
             maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte
         )
     }
+    isTrackerActive = false
     trackerThread.interrupt()
-    var isAccurate = true
-    var gcTriggerCount = 0L
+
+    var isMemoryPrecisionAccurate = true
+    gcTriggerCount = 0L
     val memoryUsageAfterExecution = MemoryUsage(
         usedMemoryInBytes = afterUnsafeMemoryUsage,
         gcCount = getGcCount()
     )
     if (memoryUsageAfterExecution.gcCount != memoryUsageBeforeExecution.gcCount) {
-        isAccurate = false
+        isMemoryPrecisionAccurate = false
         gcTriggerCount = memoryUsageAfterExecution.gcCount - memoryUsageBeforeExecution.gcCount
     }
-    var memoryUsage = memoryUsageAfterExecution.usedMemoryInBytes - memoryUsageBeforeExecution.usedMemoryInBytes
-    if (memoryUsage < 0) {
-        memoryUsage = 0
-    }
+    memoryUsage = memoryUsageAfterExecution.usedMemoryInBytes - memoryUsageBeforeExecution.usedMemoryInBytes
+
     lock.unlock()
+
     return EyeResult(
         title = title,
 
@@ -175,14 +202,14 @@ fun nooraEye(
 
         memoryUsageInByte = memoryUsage,
         maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte,
-        isMemoryAccurate = isAccurate,
+        isMemoryAccurate = isMemoryPrecisionAccurate,
         gcTriggerCount = gcTriggerCount,
 
-        ioReadSizeInByte = afterIOReadSizeInByte - beforeIOReadSizeInByte,
-        ioWriteSizeInByte = afterIOWriteSizeInByte - beforeIOWriteSizeInByte,
-        ioReadOps = afterIOReadOps - beforeIOReadOps,
-        ioWriteOps = afterIOWriteOps - beforeIOWriteOps,
+        ioReadSizeInByte = (afterIOReadSizeInByte - beforeIOReadSizeInByte).coerceAtLeast(0L),
+        ioWriteSizeInByte = (afterIOWriteSizeInByte - beforeIOWriteSizeInByte).coerceAtLeast(0L),
+        ioReadOps = (afterIOReadOps - beforeIOReadOps).coerceAtLeast(0L),
+        ioWriteOps = (afterIOWriteOps - beforeIOWriteOps).coerceAtLeast(0L),
 
-        executionDurationInMs = afterExecutionTimestamp - beforeExecutionTimestamp,
+        executionDurationInMs = (afterExecutionTimestamp - beforeExecutionTimestamp).coerceAtLeast(0L),
     )
 }

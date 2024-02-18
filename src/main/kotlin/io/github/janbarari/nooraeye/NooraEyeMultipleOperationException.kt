@@ -23,11 +23,6 @@
 
 package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.io.IOFormatter
-import io.github.janbarari.nooraeye.io.IOKilobyteFormatter
-import io.github.janbarari.nooraeye.io.IOMegabyteFormatter
-
-object IOFormatters {
-    val kb: IOFormatter = IOKilobyteFormatter()
-    val mb: IOFormatter = IOMegabyteFormatter()
-}
+class NooraEyeMultipleOperationException: Throwable(
+    "nooraEye shouldn't run more than one operation at a time!"
+)

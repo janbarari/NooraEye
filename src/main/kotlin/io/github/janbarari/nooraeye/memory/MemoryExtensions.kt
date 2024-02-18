@@ -21,12 +21,27 @@
  * SOFTWARE.
  */
 
-package io.github.janbarari.nooraeye.io
+package io.github.janbarari.nooraeye.memory
 
-import io.github.janbarari.nooraeye.byteToMegabyte
+import java.lang.management.ManagementFactory
 
-internal class IOMegabyteFormatter : IOFormatter {
-    override fun format(value: Long): String {
-        return "%sMb".format(value.byteToMegabyte())
-    }
+/**
+ * Returns the memory gc count
+ */
+internal fun getGcCount(): Long {
+    return ManagementFactory.getGarbageCollectorMXBeans()
+        .mapNotNull { it.collectionCount.takeIf { count -> count != -1L } }
+        .sum()
+}
+
+/**
+ * Returns really used memory by comparing the gc count before and after System.gc() invoked.
+ */
+@Suppress("ControlFlowWithEmptyBody")
+internal fun getSafeMemoryUsage(): MemoryUsage {
+    val before = getGcCount()
+    ManagementFactory.getMemoryMXBean().gc()
+    while (getGcCount() == before);
+    val usedMemoryInBytes = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
+    return MemoryUsage(getGcCount(), usedMemoryInBytes)
 }

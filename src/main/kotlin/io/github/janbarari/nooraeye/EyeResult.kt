@@ -23,9 +23,14 @@
 
 package io.github.janbarari.nooraeye
 
-import io.github.janbarari.nooraeye.io.IOFormatter
+import io.github.janbarari.nooraeye.io.IoFormatter
+import io.github.janbarari.nooraeye.io.IoFormatters
 import io.github.janbarari.nooraeye.memory.MemoryFormatter
+import io.github.janbarari.nooraeye.memory.MemoryFormatters
 import io.github.janbarari.nooraeye.time.TimeFormatter
+import io.github.janbarari.nooraeye.time.TimeFormatters
+import io.github.janbarari.nooraeye.util.ConsolePrinter
+import io.github.janbarari.nooraeye.util.floorWithTwoDecimal
 
 data class EyeResult(
     val title: String,
@@ -46,10 +51,11 @@ data class EyeResult(
 
     val executionDurationInMs: Long = 0,
 ) {
+    @JvmOverloads
     fun prettyPrint(
         memoryFormatter: MemoryFormatter = MemoryFormatters.byte,
         timeFormatter: TimeFormatter = TimeFormatters.millis,
-        ioFormatter: IOFormatter = IOFormatters.mb
+        ioFormatter: IoFormatter = IoFormatters.mb
     ) {
         val title = "%s Eye Result".format(title)
 
