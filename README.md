@@ -16,12 +16,8 @@ Ditch the guessing, embrace the power, and unlock your expertise with NooraEye!
 Installation
 ------------
 ```gradle
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
 implementation 'com.github.janbarari:NooraEye:0.1-beta7'
