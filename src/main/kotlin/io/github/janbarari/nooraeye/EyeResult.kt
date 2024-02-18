@@ -39,7 +39,7 @@ data class EyeResult(
     val maxCpuLoad: Double = 0.0,
 
     val memoryUsageInByte: Long = 0,
-    val isMemoryAccurate: Boolean = false,
+    val isMemoryPrecisionAccurate: Boolean = false,
     val gcTriggerCount: Long = 0,
     val isRanOutOfMemory: Boolean = false,
     val maxReachedHeapMemoryInByte: Long = 0,
@@ -93,7 +93,7 @@ data class EyeResult(
 
             printLine("Memory Usage", memoryFormatter.format(memoryUsageInByte))
             printLine("Memory Max Usage", memoryFormatter.format(maxReachedHeapMemoryInByte))
-            printLine("Memory Precision", if (isMemoryAccurate) "Accurate" else "Approximate")
+            printLine("Memory Precision", if (isMemoryPrecisionAccurate) "Accurate" else "Approximate")
             printLine("Memory GC Triggers", gcTriggerCount.toString())
 
             printBreakLine('-')

@@ -181,6 +181,10 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
     }
     trackerThread.interrupt()
 
+    if (eyeProgress.isEyeProgressInitiated) {
+        eyeProgress.setProgress(100)
+    }
+
     var isMemoryPrecisionAccurate = true
     gcTriggerCount = 0L
     val memoryUsageAfterExecution = MemoryUsage(
@@ -203,7 +207,7 @@ fun nooraEye(title: String, block: EyeProgress.() -> Unit): EyeResult {
 
         memoryUsageInByte = memoryUsage,
         maxReachedHeapMemoryInByte = maximumReachedHeapMemoryInByte,
-        isMemoryAccurate = isMemoryPrecisionAccurate,
+        isMemoryPrecisionAccurate = isMemoryPrecisionAccurate,
         gcTriggerCount = gcTriggerCount,
 
         ioReadSizeInByte = (afterIOReadSizeInByte - beforeIOReadSizeInByte).coerceAtLeast(0L),

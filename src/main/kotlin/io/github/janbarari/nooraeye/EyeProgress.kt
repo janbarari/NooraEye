@@ -36,6 +36,11 @@ class EyeProgress(private val title: String) {
     fun setProgress(value: Int) {
         ensureInitiated()
         if (value == progress) return
+        if (value > 100) {
+            progress = 100
+            printProgress()
+            return
+        }
         progress = value
         printProgress()
     }

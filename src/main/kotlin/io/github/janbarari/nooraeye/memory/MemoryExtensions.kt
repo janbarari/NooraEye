@@ -42,6 +42,9 @@ internal fun getSafeMemoryUsage(): MemoryUsage {
     val before = getGcCount()
     ManagementFactory.getMemoryMXBean().gc()
     while (getGcCount() == before);
-    val usedMemoryInBytes = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
-    return MemoryUsage(getGcCount(), usedMemoryInBytes)
+    val memoryUsage = MemoryUsage(
+        gcCount = getGcCount()
+    )
+    memoryUsage.usedMemoryInBytes = ManagementFactory.getMemoryMXBean().heapMemoryUsage.used
+    return memoryUsage
 }
