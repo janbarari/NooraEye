@@ -24,7 +24,7 @@ dependencyResolutionManagement {
     }
 }
 
-implementation 'com.github.janbarari:NooraEye:0.1-beta6'
+implementation 'com.github.janbarari:NooraEye:0.1-beta7'
 ```
 
 Usage
