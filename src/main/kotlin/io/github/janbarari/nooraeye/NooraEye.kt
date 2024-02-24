@@ -106,6 +106,20 @@ inline fun nooraEye(title: String, crossinline block: EyeProgress.() -> Unit): E
     }
     lock.lock()
 
+    gcTriggerCount = 0
+    memoryUsage = 0
+    beforeIOReadSizeInByte = 0
+    beforeIOWriteSizeInByte = 0
+    beforeIOReadOps = 0
+    beforeIOWriteOps = 0
+    afterIOReadSizeInByte = 0
+    afterIOWriteSizeInByte = 0
+    afterIOReadOps = 0
+    afterIOWriteOps = 0
+    maximumReachedHeapMemoryInByte = 0
+    averageCpuLoad = 0.0
+    maxCpuLoad = 0.0
+
     val eyeProgress = EyeProgress(title)
     val hardware = SystemInfo().hardware
     val cpu = hardware.processor

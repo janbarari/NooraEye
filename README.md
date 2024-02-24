@@ -20,7 +20,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-implementation 'com.github.janbarari:NooraEye:0.1-beta7'
+implementation 'com.github.janbarari:NooraEye:0.1-beta8'
 ```
 
 Usage
